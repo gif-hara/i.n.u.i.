@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 12636972f8f544b159cd704fdcd5c5aa
+timeCreated: 1503130017
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 64
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: MyricaM M
+  fontNames:
+  - MyricaM M
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
