@@ -147,7 +147,7 @@ namespace HK.Inui
                             {
                                 if(sortWords[gotoIndex].Word == ReservedWord.WhileEnd)
                                 {
-                                    sortWordIndex = gotoIndex + 1;
+                                    sortWordIndex = gotoIndex;
                                     break;
                                 }
                             }
