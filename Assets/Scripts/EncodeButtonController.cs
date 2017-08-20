@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 namespace HK.Inui
 {
-    public sealed class RunButtonController : MonoBehaviour, IPointerUpHandler
+    public sealed class EncodeButtonController : MonoBehaviour, IPointerUpHandler
     {
         [SerializeField]
         private InputField inputField;
@@ -14,7 +14,7 @@ namespace HK.Inui
 
         void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
         {
-            var output = Inui.Run(this.inputField.text);
+            var output = Encoder.Encode(this.inputField.text);
             this.outputText.text = output;
         }
     }
