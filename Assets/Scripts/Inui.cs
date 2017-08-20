@@ -51,7 +51,7 @@ namespace HK.Inui
             public const string Print = "キッズじゃんWWW";
 		}
 
-        private static readonly string[] ReservedWords = new string[]
+        public static readonly string[] ReservedWords = new string[]
         {
 			ReservedWord.Increment,
             ReservedWord.Decrement,
