@@ -7,9 +7,6 @@ namespace HK.Inui
     public sealed class RunButtonController : MonoBehaviour, IPointerUpHandler
     {
         [SerializeField]
-        private Inui inui;
-
-        [SerializeField]
         private InputField inputField;
 
         [SerializeField]
@@ -17,7 +14,7 @@ namespace HK.Inui
 
         void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
         {
-            var output = this.inui.Run(this.inputField.text);
+            var output = Inui.Run(this.inputField.text);
             this.outputText.text = output;
         }
     }

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
 using UnityEngine.Assertions;
@@ -7,11 +6,8 @@ using System.Text;
 
 namespace HK.Inui
 {
-    public sealed class Inui : MonoBehaviour
+    public static class Inui
     {
-        [SerializeField]
-        private Text outputText;
-
         public static class ReservedWord
         {
 			/// <summary>
@@ -55,7 +51,7 @@ namespace HK.Inui
             public const string Print = "キッズじゃんWWW";
 		}
 
-        private readonly string[] ReservedWords = new string[]
+        private static readonly string[] ReservedWords = new string[]
         {
 			ReservedWord.Increment,
             ReservedWord.Decrement,
@@ -74,17 +70,17 @@ namespace HK.Inui
             public string Word;
         }
 
-        public string Run(string source)
+        public static string Run(string source)
         {
 			var values = new List<int>();
 			values.Add(0);
 			var index = 0;
-			var sortWords = this.GetPlaneSource(source);
+            var planeSources = GetPlaneSource(source);
 			var result = new StringBuilder();
 			var printedCount = 0;
-			for (int sortWordIndex = 0; sortWordIndex < sortWords.Count; ++sortWordIndex)
+			for (int sortWordIndex = 0; sortWordIndex < planeSources.Count; ++sortWordIndex)
 			{
-				var word = sortWords[sortWordIndex].Word;
+				var word = planeSources[sortWordIndex].Word;
 				switch (word)
 				{
 					case ReservedWord.Increment:
@@ -108,9 +104,9 @@ namespace HK.Inui
 						if (values[index] == 0)
 						{
 							var successWhileStart = false;
-							for (int gotoIndex = sortWordIndex + 1; gotoIndex < sortWords.Count; ++gotoIndex)
+							for (int gotoIndex = sortWordIndex + 1; gotoIndex < planeSources.Count; ++gotoIndex)
 							{
-								if (sortWords[gotoIndex].Word == ReservedWord.WhileEnd)
+								if (planeSources[gotoIndex].Word == ReservedWord.WhileEnd)
 								{
 									sortWordIndex = gotoIndex;
 									successWhileStart = true;
@@ -124,7 +120,7 @@ namespace HK.Inui
 						var successWhileEnd = false;
 						for (int gotoIndex = sortWordIndex - 1; gotoIndex >= 0; --gotoIndex)
 						{
-							if (sortWords[gotoIndex].Word == ReservedWord.WhileStart)
+							if (planeSources[gotoIndex].Word == ReservedWord.WhileStart)
 							{
 								sortWordIndex = gotoIndex - 1;
 								successWhileEnd = true;
@@ -156,16 +152,10 @@ namespace HK.Inui
             return result.ToString();
         }
 
-        public string Encode(string message)
-        {
-
-            return message;
-        }
-
         /// <summary>
         /// 予約語のみのデータリストを返す
         /// </summary>
-        private List<SortWord> GetPlaneSource(string source)
+        private static List<SortWord> GetPlaneSource(string source)
         {
 			var result = new List<SortWord>();
 
