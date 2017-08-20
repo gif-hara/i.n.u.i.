@@ -86,9 +86,9 @@ namespace HK.Inui
             {
                 executeCount.Add(r, 0);
             }
-            for (int sortWordIndex = 0; sortWordIndex < planeSources.Count; ++sortWordIndex)
+            for (int planeSourceIndex = 0; planeSourceIndex < planeSources.Count; ++planeSourceIndex)
             {
-                var word = planeSources[sortWordIndex].Word;
+                var word = planeSources[planeSourceIndex].Word;
                 ++executeCount[word];
 				switch (word)
                 {
@@ -116,11 +116,11 @@ namespace HK.Inui
 						if (values[index] == 0)
 						{
 							var successWhileStart = false;
-							for (int gotoIndex = sortWordIndex + 1; gotoIndex < planeSources.Count; ++gotoIndex)
+							for (int gotoIndex = planeSourceIndex + 1; gotoIndex < planeSources.Count; ++gotoIndex)
 							{
 								if (planeSources[gotoIndex].Word == ReservedWord.WhileEnd)
 								{
-									sortWordIndex = gotoIndex;
+									planeSourceIndex = gotoIndex;
 									successWhileStart = true;
 									break;
 								}
@@ -133,11 +133,11 @@ namespace HK.Inui
 						break;
 					case ReservedWord.WhileEnd:
 						var successWhileEnd = false;
-						for (int gotoIndex = sortWordIndex - 1; gotoIndex >= 0; --gotoIndex)
+						for (int gotoIndex = planeSourceIndex - 1; gotoIndex >= 0; --gotoIndex)
 						{
 							if (planeSources[gotoIndex].Word == ReservedWord.WhileStart)
 							{
-								sortWordIndex = gotoIndex - 1;
+								planeSourceIndex = gotoIndex - 1;
 								successWhileEnd = true;
 								break;
 							}
