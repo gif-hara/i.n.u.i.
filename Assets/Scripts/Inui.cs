@@ -133,9 +133,7 @@ namespace HK.Inui
                         Assert.IsTrue(index > 0, "indexが負数になりました");
                         break;
                     case ReservedWord.Echo:
-                        var c = (char)values[index];
-                        Debug.Log(c);
-                        builder.Append(c);
+                        builder.Append((char)values[index]);
                         break;
                     default:
                         Assert.IsTrue(false, string.Format("{0} は未対応です", s.Word));
