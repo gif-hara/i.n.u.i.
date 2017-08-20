@@ -12,9 +12,13 @@ namespace HK.Inui
         [SerializeField]
         private InputField inputField;
 
+        [SerializeField]
+        private Text outputText;
+
         void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
         {
-            this.inui.Run(this.inputField.text);
+            var output = this.inui.Run(this.inputField.text);
+            this.outputText.text = output;
         }
     }
 }
