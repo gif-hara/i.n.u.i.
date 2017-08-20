@@ -769,7 +769,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Encode\uFF08\u82F1\u5358\u8A9E\u306E\u307F\uFF09"
+  m_Text: Encode
 --- !u!222 &580395138
 CanvasRenderer:
   m_ObjectHideFlags: 0
