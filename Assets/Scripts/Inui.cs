@@ -76,13 +76,96 @@ namespace HK.Inui
 
         public string Run(string source)
         {
-            return this.GetOutput(source);
+			var values = new List<int>();
+			values.Add(0);
+			var index = 0;
+			var sortWords = this.GetPlaneSource(source);
+			var result = new StringBuilder();
+			var printedCount = 0;
+			for (int sortWordIndex = 0; sortWordIndex < sortWords.Count; ++sortWordIndex)
+			{
+				var word = sortWords[sortWordIndex].Word;
+				switch (word)
+				{
+					case ReservedWord.Increment:
+						++values[index];
+						break;
+					case ReservedWord.Decrement:
+						--values[index];
+						break;
+					case ReservedWord.MoveRight:
+						++index;
+						if (values.Count <= index)
+						{
+							values.Add(0);
+						}
+						break;
+					case ReservedWord.MoveLeft:
+						--index;
+						Assert.IsTrue(index >= 0, string.Format("{0}番目の\"{1}\"でポインタが負数になりました", sortWordIndex, ReservedWord.MoveLeft));
+						break;
+					case ReservedWord.WhileStart:
+						if (values[index] == 0)
+						{
+							var successWhileStart = false;
+							for (int gotoIndex = sortWordIndex + 1; gotoIndex < sortWords.Count; ++gotoIndex)
+							{
+								if (sortWords[gotoIndex].Word == ReservedWord.WhileEnd)
+								{
+									sortWordIndex = gotoIndex;
+									successWhileStart = true;
+									break;
+								}
+							}
+							Assert.IsTrue(successWhileStart, string.Format("\"{0}\"に対応する\"{1}\"がありませんでした", ReservedWord.WhileStart, ReservedWord.WhileEnd));
+						}
+						break;
+					case ReservedWord.WhileEnd:
+						var successWhileEnd = false;
+						for (int gotoIndex = sortWordIndex - 1; gotoIndex >= 0; --gotoIndex)
+						{
+							if (sortWords[gotoIndex].Word == ReservedWord.WhileStart)
+							{
+								sortWordIndex = gotoIndex - 1;
+								successWhileEnd = true;
+								break;
+							}
+						}
+						Assert.IsTrue(successWhileEnd, string.Format("\"{0}\"に対応する\"{1}\"がありませんでした", ReservedWord.WhileEnd, ReservedWord.WhileStart));
+						break;
+					case ReservedWord.Echo:
+						result.Append((char)values[index]);
+						break;
+					case ReservedWord.Print:
+						var printBuilder = new StringBuilder();
+						++printedCount;
+						printBuilder.AppendLine(string.Format("Print[{0}]", printedCount));
+						printBuilder.AppendLine(string.Format("Index = {0}", index));
+						for (int i = 0; i < values.Count; ++i)
+						{
+							printBuilder.AppendLine(string.Format("Value[{0}] = {1}", i, values[i]));
+						}
+						Debug.Log(printBuilder.ToString());
+						break;
+					default:
+						Assert.IsTrue(false, string.Format("{0} は未対応です", word));
+						break;
+				}
+			}
+
+            return result.ToString();
+        }
+
+        public string Encode(string message)
+        {
+
+            return message;
         }
 
         /// <summary>
-        /// 予約語のみのソートされたリストを返す
+        /// 予約語のみのデータリストを返す
         /// </summary>
-        private List<SortWord> GetSortedWords(string source)
+        private List<SortWord> GetPlaneSource(string source)
         {
 			var result = new List<SortWord>();
 
@@ -109,87 +192,5 @@ namespace HK.Inui
 
             return result;
 		}
-
-        private string GetOutput(string source)
-        {
-            var values = new List<int>();
-            values.Add(0);
-            var index = 0;
-            var sortWords = this.GetSortedWords(source);
-            var builder = new StringBuilder();
-            var printedCount = 0;
-            for (int sortWordIndex = 0; sortWordIndex < sortWords.Count; ++sortWordIndex)
-            {
-                var word = sortWords[sortWordIndex].Word;
-                switch(word)
-                {
-                    case ReservedWord.Increment:
-                        ++values[index];
-                        break;
-                    case ReservedWord.Decrement:
-                        --values[index];
-                        break;
-                    case ReservedWord.MoveRight:
-                        ++index;
-                        if(values.Count <= index)
-                        {
-                            values.Add(0);
-                        }
-                        break;
-                    case ReservedWord.MoveLeft:
-                        --index;
-                        Assert.IsTrue(index >= 0, string.Format("{0}番目の\"{1}\"でポインタが負数になりました", sortWordIndex, ReservedWord.MoveLeft));
-                        break;
-                    case ReservedWord.WhileStart:
-                        if(values[index] == 0)
-                        {
-                            var successWhileStart = false;
-                            for (int gotoIndex = sortWordIndex + 1; gotoIndex < sortWords.Count; ++gotoIndex)
-                            {
-                                if(sortWords[gotoIndex].Word == ReservedWord.WhileEnd)
-                                {
-                                    sortWordIndex = gotoIndex;
-                                    successWhileStart = true;
-                                    break;
-                                }
-                            }
-                            Assert.IsTrue(successWhileStart, string.Format("\"{0}\"に対応する\"{1}\"がありませんでした", ReservedWord.WhileStart, ReservedWord.WhileEnd));
-                        }
-                        break;
-                    case ReservedWord.WhileEnd:
-                        var successWhileEnd = false;
-                        for (int gotoIndex = sortWordIndex - 1; gotoIndex >= 0; --gotoIndex)
-                        {
-                            if(sortWords[gotoIndex].Word == ReservedWord.WhileStart)
-                            {
-                                sortWordIndex = gotoIndex - 1;
-                                successWhileEnd = true;
-                                break;
-                            }
-                        }
-                        Assert.IsTrue(successWhileEnd, string.Format("\"{0}\"に対応する\"{1}\"がありませんでした", ReservedWord.WhileEnd, ReservedWord.WhileStart));
-                        break;
-                    case ReservedWord.Echo:
-                        builder.Append((char)values[index]);
-                        break;
-                    case ReservedWord.Print:
-                        var printBuilder = new StringBuilder();
-                        ++printedCount;
-                        printBuilder.AppendLine(string.Format("Print[{0}]", printedCount));
-                        printBuilder.AppendLine(string.Format("Index = {0}", index));
-                        for (int i = 0; i < values.Count; ++i)
-                        {
-                            printBuilder.AppendLine(string.Format("Value[{0}] = {1}", i, values[i]));
-                        }
-                        Debug.Log(printBuilder.ToString());
-                        break;
-                    default:
-                        Assert.IsTrue(false, string.Format("{0} は未対応です", word));
-                        break;
-                }
-            }
-
-            return builder.ToString();
-        }
     }
 }
