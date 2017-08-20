@@ -35,19 +35,24 @@ namespace HK.Inui
 			public const string MoveLeft = "あるか？";
 
 			/// <summary>
-            /// ポインタの指すメモリの値が0だったら次の<see cref="GotoPrevious"/>に進む
+            /// ポインタの指すメモリの値が0だったら次の<see cref="WhileEnd"/>に進む
 			/// </summary>
-			public const string GotoNext = "僕っすかぁ？W";
+            public const string WhileStart = "何すかぁ？W";
 
 			/// <summary>
-            /// ポインタの指すメモリの値が0でなければ前の<see cref="GotoNext"/>に戻る
+            /// ポインタの指すメモリの値が0でなければ前の<see cref="WhileStart"/>に戻る
 			/// </summary>
-			public const string GotoPrevious = "何すかぁ？W";
+            public const string WhileEnd = "俺の友達それで死んだけど";
 
             /// <summary>
             /// 出力
             /// </summary>
             public const string Echo = "そういうとこよ";
+
+            /// <summary>
+            /// 現在のメモリの状態とポインタの位置を出力する
+            /// </summary>
+            public const string Print = "キッズじゃんWWW";
 		}
 
         private readonly string[] ReservedWords = new string[]
@@ -56,9 +61,10 @@ namespace HK.Inui
             ReservedWord.Decrement,
             ReservedWord.MoveRight,
             ReservedWord.MoveLeft,
-            ReservedWord.GotoNext,
-			ReservedWord.GotoPrevious,
+            ReservedWord.WhileStart,
+			ReservedWord.WhileEnd,
             ReservedWord.Echo,
+            ReservedWord.Print,
         };
 
         public class SortWord
@@ -111,6 +117,7 @@ namespace HK.Inui
             var index = 0;
             var sortWords = this.GetSortedWords(source);
             var builder = new StringBuilder();
+            var printedCount = 0;
             for (int sortWordIndex = 0; sortWordIndex < sortWords.Count; ++sortWordIndex)
             {
                 var word = sortWords[sortWordIndex].Word;
@@ -133,12 +140,12 @@ namespace HK.Inui
                         --index;
                         Assert.IsTrue(index >= 0, string.Format("{0}番目の{1}でポインタが負数になりました", sortWordIndex, ReservedWord.MoveLeft));
                         break;
-                    case ReservedWord.GotoNext:
+                    case ReservedWord.WhileStart:
                         if(values[index] == 0)
                         {
                             for (int gotoIndex = sortWordIndex + 1; gotoIndex < sortWords.Count; ++gotoIndex)
                             {
-                                if(sortWords[gotoIndex].Word == ReservedWord.GotoPrevious)
+                                if(sortWords[gotoIndex].Word == ReservedWord.WhileEnd)
                                 {
                                     sortWordIndex = gotoIndex + 1;
                                     break;
@@ -146,10 +153,10 @@ namespace HK.Inui
                             }
                         }
                         break;
-                    case ReservedWord.GotoPrevious:
+                    case ReservedWord.WhileEnd:
                         for (int gotoIndex = sortWordIndex - 1; gotoIndex >= 0; --gotoIndex)
                         {
-                            if(sortWords[gotoIndex].Word == ReservedWord.GotoNext)
+                            if(sortWords[gotoIndex].Word == ReservedWord.WhileStart)
                             {
                                 sortWordIndex = gotoIndex - 1;
                                 break;
@@ -160,6 +167,17 @@ namespace HK.Inui
                         break;
                     case ReservedWord.Echo:
                         builder.Append((char)values[index]);
+                        break;
+                    case ReservedWord.Print:
+                        var printBuilder = new StringBuilder();
+                        ++printedCount;
+                        printBuilder.AppendLine(string.Format("Print[{0}]", printedCount));
+                        printBuilder.AppendLine(string.Format("Index = {0}", index));
+                        for (int i = 0; i < values.Count; ++i)
+                        {
+                            printBuilder.AppendLine(string.Format("Value[{0}] = {1}", i, values[i]));
+                        }
+                        Debug.Log(printBuilder.ToString());
                         break;
                     default:
                         Assert.IsTrue(false, string.Format("{0} は未対応です", word));
