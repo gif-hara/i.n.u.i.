@@ -14,6 +14,11 @@ namespace HK.Inui
             var current = 0;
             foreach(var c in message)
             {
+                if(!IsAlphabetAndNumber(c))
+                {
+                    return string.Format("<color=red>英数字ではない文字があります</color>");
+                }
+
                 var diff = c - current;
                 var absDiff = Mathf.Abs(diff);
                 var isPositive = diff > 0;
@@ -23,6 +28,11 @@ namespace HK.Inui
                 current = c;
             }
             return result.ToString();
+        }
+
+        private static bool IsAlphabetAndNumber(char c)
+        {
+            return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9';
         }
     }
 }
