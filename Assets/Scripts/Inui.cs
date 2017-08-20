@@ -22,7 +22,7 @@ namespace HK.Inui
 			/// <summary>
 			/// ポインタの指すメモリの値を1減らす
 			/// </summary>
-			public const string Decrement = "がちやな";
+			public const string Decrement = "が？";
 
             /// <summary>
             /// ポインタを右に1つずらす
