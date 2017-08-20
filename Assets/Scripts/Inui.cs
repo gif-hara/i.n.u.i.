@@ -8,6 +8,8 @@ namespace HK.Inui
 {
     public static class Inui
     {
+        private const int ExecuteCountMax = 1000000;
+
         public static class ReservedWord
         {
 			/// <summary>
@@ -78,6 +80,7 @@ namespace HK.Inui
             var planeSources = GetPlaneSource(source);
 			var result = new StringBuilder();
 			var printedCount = 0;
+            var executeCount = 0;
 			for (int sortWordIndex = 0; sortWordIndex < planeSources.Count; ++sortWordIndex)
 			{
 				var word = planeSources[sortWordIndex].Word;
@@ -147,6 +150,12 @@ namespace HK.Inui
 						Assert.IsTrue(false, string.Format("{0} は未対応です", word));
 						break;
 				}
+                ++executeCount;
+                if(executeCount > ExecuteCountMax)
+                {
+                    Debug.LogWarning(string.Format("実行回数が{0}回を超えたので停止します", ExecuteCountMax));
+                    break;
+                }
 			}
 
             return result.ToString();
