@@ -80,28 +80,37 @@ namespace HK.Inui
             var planeSources = GetPlaneSource(source);
 			var result = new StringBuilder();
 			var printedCount = 0;
-            var executeCount = 0;
-			for (int sortWordIndex = 0; sortWordIndex < planeSources.Count; ++sortWordIndex)
-			{
-				var word = planeSources[sortWordIndex].Word;
+            var totalExecuteCount = 0;
+            var executeCount = new Dictionary<string, int>();
+            foreach(var r in ReservedWords)
+            {
+                executeCount.Add(r, 0);
+            }
+            for (int sortWordIndex = 0; sortWordIndex < planeSources.Count; ++sortWordIndex)
+            {
+                var word = planeSources[sortWordIndex].Word;
+                ++executeCount[word];
 				switch (word)
-				{
-					case ReservedWord.Increment:
-						++values[index];
-						break;
-					case ReservedWord.Decrement:
-						--values[index];
-						break;
-					case ReservedWord.MoveRight:
-						++index;
-						if (values.Count <= index)
-						{
-							values.Add(0);
-						}
-						break;
-					case ReservedWord.MoveLeft:
-						--index;
-						Assert.IsTrue(index >= 0, string.Format("{0}番目の\"{1}\"でポインタが負数になりました", sortWordIndex, ReservedWord.MoveLeft));
+                {
+                    case ReservedWord.Increment:
+                        ++values[index];
+                        break;
+                    case ReservedWord.Decrement:
+                        --values[index];
+                        break;
+                    case ReservedWord.MoveRight:
+                        ++index;
+                        if (values.Count <= index)
+                        {
+                            values.Add(0);
+                        }
+                        break;
+                    case ReservedWord.MoveLeft:
+                        --index;
+                        if (index < 0)
+                        {
+                            return string.Format("<color=red>{0}番目の \"{1}\" でポインタが負数になりました</color>", executeCount[word], ReservedWord.MoveLeft);
+                        }
 						break;
 					case ReservedWord.WhileStart:
 						if (values[index] == 0)
@@ -116,7 +125,10 @@ namespace HK.Inui
 									break;
 								}
 							}
-							Assert.IsTrue(successWhileStart, string.Format("\"{0}\"に対応する\"{1}\"がありませんでした", ReservedWord.WhileStart, ReservedWord.WhileEnd));
+                            if(!successWhileStart)
+                            {
+                                return string.Format("<color=red>{0}番目の \"{1}\" に対応する \"{1}\" がありませんでした", executeCount[word], ReservedWord.WhileStart, ReservedWord.WhileEnd);
+                            }
 						}
 						break;
 					case ReservedWord.WhileEnd:
@@ -130,7 +142,10 @@ namespace HK.Inui
 								break;
 							}
 						}
-						Assert.IsTrue(successWhileEnd, string.Format("\"{0}\"に対応する\"{1}\"がありませんでした", ReservedWord.WhileEnd, ReservedWord.WhileStart));
+                        if(!successWhileEnd)
+                        {
+                            return string.Format("<color=red>{0}番目の \"{1}\" に対応する \"{2}\" がありませんでした</color>", executeCount[word], ReservedWord.WhileEnd, ReservedWord.WhileStart);
+                        }
 						break;
 					case ReservedWord.Echo:
 						result.Append((char)values[index]);
@@ -150,11 +165,10 @@ namespace HK.Inui
 						Assert.IsTrue(false, string.Format("{0} は未対応です", word));
 						break;
 				}
-                ++executeCount;
-                if(executeCount > ExecuteCountMax)
+                ++totalExecuteCount;
+                if(totalExecuteCount > ExecuteCountMax)
                 {
-                    Debug.LogWarning(string.Format("実行回数が{0}回を超えたので停止します", ExecuteCountMax));
-                    break;
+                    return string.Format("<color=red>実行回数が{0}回を超えたので停止します</color>", ExecuteCountMax);
                 }
 			}
 
