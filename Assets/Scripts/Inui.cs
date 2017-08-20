@@ -111,9 +111,10 @@ namespace HK.Inui
             var index = 0;
             var sortWords = this.GetSortedWords(source);
             var builder = new StringBuilder();
-            sortWords.ForEach(s =>
+            for (int sortWordIndex = 0; sortWordIndex < sortWords.Count; ++sortWordIndex)
             {
-                switch(s.Word)
+                var word = sortWords[sortWordIndex].Word;
+                switch(word)
                 {
                     case ReservedWord.Increment:
                         ++values[index];
@@ -130,16 +131,41 @@ namespace HK.Inui
                         break;
                     case ReservedWord.MoveLeft:
                         --index;
-                        Assert.IsTrue(index > 0, "indexが負数になりました");
+                        Assert.IsTrue(index >= 0, string.Format("{0}番目の{1}でポインタが負数になりました", sortWordIndex, ReservedWord.MoveLeft));
+                        break;
+                    case ReservedWord.GotoNext:
+                        if(values[index] == 0)
+                        {
+                            for (int gotoIndex = sortWordIndex + 1; gotoIndex < sortWords.Count; ++gotoIndex)
+                            {
+                                if(sortWords[gotoIndex].Word == ReservedWord.GotoPrevious)
+                                {
+                                    sortWordIndex = gotoIndex + 1;
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                    case ReservedWord.GotoPrevious:
+                        for (int gotoIndex = sortWordIndex - 1; gotoIndex >= 0; --gotoIndex)
+                        {
+                            if(sortWords[gotoIndex].Word == ReservedWord.GotoNext)
+                            {
+                                sortWordIndex = gotoIndex - 1;
+                                break;
+                            }
+                        }
+
+                        //Assert.IsTrue(false, string.Format("{0}に対応する{1}がありませんでした", ReservedWord.GotoPrevious, ReservedWord.GotoNext));
                         break;
                     case ReservedWord.Echo:
                         builder.Append((char)values[index]);
                         break;
                     default:
-                        Assert.IsTrue(false, string.Format("{0} は未対応です", s.Word));
+                        Assert.IsTrue(false, string.Format("{0} は未対応です", word));
                         break;
                 }
-            });
+            }
 
             return builder.ToString();
         }
