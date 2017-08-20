@@ -18,8 +18,8 @@ namespace HK.Inui
                 var absDiff = Mathf.Abs(diff);
                 var isPositive = diff > 0;
                 var word = isPositive ? Inui.ReservedWord.Increment : Inui.ReservedWord.Decrement;
-                result.AppendLine(string.Concat(Enumerable.Repeat(word, absDiff).ToArray()));
-                result.AppendLine(Inui.ReservedWord.Echo);
+                result.Append(string.Concat(Enumerable.Repeat(word, absDiff).ToArray()));
+                result.Append(Inui.ReservedWord.Echo);
                 current = c;
             }
             return result.ToString();

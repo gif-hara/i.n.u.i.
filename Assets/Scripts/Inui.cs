@@ -43,7 +43,7 @@ namespace HK.Inui
             /// <summary>
             /// 出力
             /// </summary>
-            public const string Echo = "そういうとこよ";
+            public const string Echo = "ケンタッキー買ってきます！";
 
             /// <summary>
             /// 現在のメモリの状態とポインタの位置を出力する
