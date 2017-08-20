@@ -2,6 +2,8 @@
 using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
+using UnityEngine.Assertions;
+using System.Text;
 
 namespace HK.Inui
 {
@@ -10,15 +12,53 @@ namespace HK.Inui
         [SerializeField]
         private Text outputText;
 
+        public static class ReservedWord
+        {
+			/// <summary>
+			/// ポインタの指すメモリの値を1増やす
+			/// </summary>
+            public const string Increment = "マ？";
+
+			/// <summary>
+			/// ポインタの指すメモリの値を1減らす
+			/// </summary>
+			public const string Decrement = "がちやな";
+
+            /// <summary>
+            /// ポインタを右に1つずらす
+            /// </summary>
+            public const string MoveRight = "あるなぁ";
+
+			/// <summary>
+			/// ポインタを左に1つずらす
+			/// </summary>
+			public const string MoveLeft = "あるか？";
+
+			/// <summary>
+            /// ポインタの指すメモリの値が0だったら次の<see cref="GotoPrevious"/>に進む
+			/// </summary>
+			public const string GotoNext = "僕っすかぁ？W";
+
+			/// <summary>
+            /// ポインタの指すメモリの値が0でなければ前の<see cref="GotoNext"/>に戻る
+			/// </summary>
+			public const string GotoPrevious = "何すかぁ？W";
+
+            /// <summary>
+            /// 出力
+            /// </summary>
+            public const string Echo = "そういうとこよ";
+		}
+
         private readonly string[] ReservedWords = new string[]
         {
-            "マ？", // ポインタの指すメモリの値を1増やす
-            "がちやな", // ポインタの指すメモリの値を1減らす
-            "あるなぁ", // ポインタを右に1つずらす
-            "あるか？", // ポインタを左に1つずらす
-            "僕っすかぁ？W", // ポインタの指すメモリの値が0だったら次の「何すかぁ？W」に進む
-            "何すかぁ？W", // ポインタの指すメモリの値が0でなければ前の「僕っすかぁ？W」に戻る
-            "そういうとこよ", // 出力
+			ReservedWord.Increment,
+            ReservedWord.Decrement,
+            ReservedWord.MoveRight,
+            ReservedWord.MoveLeft,
+            ReservedWord.GotoNext,
+			ReservedWord.GotoPrevious,
+            ReservedWord.Echo,
         };
 
         public class SortWord
@@ -30,7 +70,7 @@ namespace HK.Inui
 
         public string Run(string source)
         {
-            return source;
+            return this.GetOutput(source);
         }
 
         /// <summary>
@@ -63,5 +103,47 @@ namespace HK.Inui
 
             return result;
 		}
+
+        private string GetOutput(string source)
+        {
+            var values = new List<int>();
+            values.Add(0);
+            var index = 0;
+            var sortWords = this.GetSortedWords(source);
+            var builder = new StringBuilder();
+            sortWords.ForEach(s =>
+            {
+                switch(s.Word)
+                {
+                    case ReservedWord.Increment:
+                        values[index]++;
+                        break;
+                    case ReservedWord.Decrement:
+                        values[index]--;
+                        break;
+                    case ReservedWord.MoveRight:
+                        index++;
+                        if(values.Count <= index)
+                        {
+                            values.Add(0);
+                        }
+                        break;
+                    case ReservedWord.MoveLeft:
+                        index--;
+                        Assert.IsTrue(index > 0, "indexが負数になりました");
+                        break;
+                    case ReservedWord.Echo:
+                        var c = (char)values[index];
+                        Debug.Log(c);
+                        builder.Append(c);
+                        break;
+                    default:
+                        Assert.IsTrue(false, string.Format("{0} は未対応です", s.Word));
+                        break;
+                }
+            });
+
+            return builder.ToString();
+        }
     }
 }
