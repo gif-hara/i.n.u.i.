@@ -116,20 +116,20 @@ namespace HK.Inui
                 switch(s.Word)
                 {
                     case ReservedWord.Increment:
-                        values[index]++;
+                        ++values[index];
                         break;
                     case ReservedWord.Decrement:
-                        values[index]--;
+                        --values[index];
                         break;
                     case ReservedWord.MoveRight:
-                        index++;
+                        ++index;
                         if(values.Count <= index)
                         {
                             values.Add(0);
                         }
                         break;
                     case ReservedWord.MoveLeft:
-                        index--;
+                        --index;
                         Assert.IsTrue(index > 0, "indexが負数になりました");
                         break;
                     case ReservedWord.Echo:
