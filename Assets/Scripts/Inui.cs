@@ -138,7 +138,7 @@ namespace HK.Inui
                         break;
                     case ReservedWord.MoveLeft:
                         --index;
-                        Assert.IsTrue(index >= 0, string.Format("{0}番目の{1}でポインタが負数になりました", sortWordIndex, ReservedWord.MoveLeft));
+                        Assert.IsTrue(index >= 0, string.Format("{0}番目の\"{1}\"でポインタが負数になりました", sortWordIndex, ReservedWord.MoveLeft));
                         break;
                     case ReservedWord.WhileStart:
                         if(values[index] == 0)
