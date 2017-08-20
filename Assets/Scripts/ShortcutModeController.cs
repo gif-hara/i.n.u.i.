@@ -17,7 +17,9 @@ namespace HK.Inui
             this.OnInputAction(KeyCode.Semicolon, () => this.InsertTo(Inui.ReservedWord.Increment));
             this.OnInputAction(KeyCode.Minus, () => this.InsertTo(Inui.ReservedWord.Decrement));
             this.OnInputAction(KeyCode.LeftBracket, () => this.InsertTo(Inui.ReservedWord.WhileStart));
-            this.OnInputAction(KeyCode.RightBracket, () => this.InsertTo(Inui.ReservedWord.WhileEnd));
+			this.OnInputAction(KeyCode.RightBracket, () => this.InsertTo(Inui.ReservedWord.WhileEnd));
+			this.OnInputAction(KeyCode.Space, () => this.InsertTo(" "));
+            this.OnInputAction(KeyCode.Tab, () => this.InsertTo("    "));
 
 			if(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
             {
@@ -44,14 +46,6 @@ namespace HK.Inui
         {
             this.inputField.readOnly = false;
         }
-
-        private void OnInputInsert(KeyCode keyCode, string reservedWord)
-        {
-            if (Input.GetKeyDown(keyCode))
-			{
-                this.InsertTo(reservedWord);
-			}
-		}
 
         private void Run()
         {
