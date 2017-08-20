@@ -143,27 +143,31 @@ namespace HK.Inui
                     case ReservedWord.WhileStart:
                         if(values[index] == 0)
                         {
+                            var successWhileStart = false;
                             for (int gotoIndex = sortWordIndex + 1; gotoIndex < sortWords.Count; ++gotoIndex)
                             {
                                 if(sortWords[gotoIndex].Word == ReservedWord.WhileEnd)
                                 {
                                     sortWordIndex = gotoIndex;
+                                    successWhileStart = true;
                                     break;
                                 }
                             }
+                            Assert.IsTrue(successWhileStart, string.Format("\"{0}\"に対応する\"{1}\"がありませんでした", ReservedWord.WhileStart, ReservedWord.WhileEnd));
                         }
                         break;
                     case ReservedWord.WhileEnd:
+                        var successWhileEnd = false;
                         for (int gotoIndex = sortWordIndex - 1; gotoIndex >= 0; --gotoIndex)
                         {
                             if(sortWords[gotoIndex].Word == ReservedWord.WhileStart)
                             {
                                 sortWordIndex = gotoIndex - 1;
+                                successWhileEnd = true;
                                 break;
                             }
                         }
-
-                        //Assert.IsTrue(false, string.Format("{0}に対応する{1}がありませんでした", ReservedWord.GotoPrevious, ReservedWord.GotoNext));
+                        Assert.IsTrue(successWhileEnd, string.Format("\"{0}\"に対応する\"{1}\"がありませんでした", ReservedWord.WhileEnd, ReservedWord.WhileStart));
                         break;
                     case ReservedWord.Echo:
                         builder.Append((char)values[index]);
