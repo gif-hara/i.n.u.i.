@@ -40,7 +40,7 @@ namespace HK.Inui
             public const string WhileStart = "何すかぁ？W";
 
 			/// <summary>
-            /// ポインタの指すメモリの値が0でなければ前の<see cref="WhileStart"/>に戻る
+            /// <see cref="WhileEnd"/>より手前の<see cref="WhileStart"/>に戻る
 			/// </summary>
             public const string WhileEnd = "俺の友達それで死んだけど";
 
